@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الة حاسبة بسيطة </title>
+        <style>
+        body {
+            font-family: Arial;
+            max-width: 400px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        input {
+            padding: 10px;
+            font-size: 18px;
+            margin: 5px;
+            width: 150px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin: 5px;
+            cursor: pointer;
+            background: #0984e3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #07488a;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #2d3436;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <input id="numper1" type="number">
+    <br>
+    <button onclick="calculate('+')">➕ جمع</button>
+    <button onclick="calculate('-')">➖ طرح</button>
+    <button onclick="calculate('*')">✖️ ضرب</button>
+    <button onclick="calculate('/')">➗ قسمة</button>
+    <br>
+    <input id="numper2" type="number">
+    <div id="result"></div>
+
+    <script>
+        function calculate(operation){
+          let num1 = document.getElementById("numper1");
+          let num2 = document.getElementById("numper2");
+          
+           let n1 = Number(num1.value);
+           let n2 = Number(num2.value);
+
+           if(num1.value === "" || num2.value === ""){
+            document.getElementById("result").innerText = "اكتب الرقم الاول عشان نقدر نحسب";
+            return;
+           }
+        
+
+        let result;
+        if(operation === "+"){
+            result = n1 + n2;
+        }else if(operation === "-"){
+            result = n1 - n2;
+        } else if(operation === "*"){
+            result = n1 * n2;
+        }
+        else if(operation === "/"){
+            if(n2 === 0){
+                document.getElementById("result").innerText = "مفيش قسمة على الصفر";
+                return;
+            }
+           result = n1 / n2;
+        }
+    
+     document.getElementById("result").innerText = "النتيجة : " + result; 
+    }
+    
+    </script>
+</body>
+</html>
