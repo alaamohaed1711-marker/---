@@ -1,7 +1,7 @@
 {
     "name": "آلة حاسبة",
     "short_name": "حاسبة",
-    "description": "تطبيق آلة حاسبة بسيط وعمل بدون انترنت",
+    "description": "تطبيق آلة حاسبة بسيط يعمل بدون انترنت",
     "start_url": "./index.html",
     "display": "standalone",
     "orientation": "portrait",
