@@ -1,0 +1,21 @@
+{
+    "name": "آلة حاسبة",
+    "short_name": "حاسبة",
+    "description": "تطبيق آلة حاسبة بسيط وعمل بدون انترنت",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#0f0c29",
+    "theme_color": "#0f0c29",
+    "dir": "rtl",
+    "lang": "ar",
+    "categories": ["utilities", "productivity"],
+    "icons": [
+        {
+            "src": "icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ]
+}
