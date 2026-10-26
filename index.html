@@ -1,87 +1,186 @@
 <!DOCTYPE html>
-<html lang="en">
+<html dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الة حاسبة بسيطة </title>
-        <style>
-        body {
-            font-family: Arial;
-            max-width: 400px;
-            margin: 50px auto;
-            text-align: center;
+    <title>آلة حاسبة</title>
+    <style>
+        * {
+            font-family: Arial, sans-serif;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
-        input {
-            padding: 10px;
+        body {
+            background: black;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: #1e1e2e;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            border: 1px solid #2d2d44;
+        }
+        h2 {
+            color: #a5b4fc;
+            margin-bottom: 20px;
+        }
+        input[type="number"] {
+            padding: 12px;
             font-size: 18px;
-            margin: 5px;
             width: 150px;
+            margin: 5px;
+            border: 2px solid #2d2d44;
+            border-radius: 8px;
+            text-align: center;
+            background: #2d2d44;
+            color: #ffffff;
+        }
+        input[type="number"]::placeholder {
+            color: #888;
+        }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 15px 0;
         }
         button {
-            padding: 10px 20px;
+            padding: 12px 20px;
             font-size: 18px;
-            margin: 5px;
             cursor: pointer;
-            background: #0984e3;
-            color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
+            color: white;
+            background: #667eea;
+            transition: 0.3s;
         }
         button:hover {
-            background: #07488a;
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+        button.clear {
+            background: #e17055;
+        }
+        button.clear:hover {
+            background: #d63031;
+        }
+        button.download {
+            background: #00b894;
+        }
+        button.download:hover {
+            background: #00a381;
         }
         #result {
-            margin-top: 20px;
+            margin: 15px 0;
             font-size: 24px;
-            color: #2d3436;
+            color: #00b894;
             font-weight: bold;
+            padding: 15px;
+            background: #2d2d44;
+            border-radius: 8px;
+        }
+        .actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
-    <input id="numper1" type="number">
-    <br>
-    <button onclick="calculate('+')">➕ جمع</button>
-    <button onclick="calculate('-')">➖ طرح</button>
-    <button onclick="calculate('*')">✖️ ضرب</button>
-    <button onclick="calculate('/')">➗ قسمة</button>
-    <br>
-    <input id="numper2" type="number">
-    <div id="result"></div>
+    <div class="container">
+        <h2>🔢 آلة حاسبة</h2>
+        <input type="number" id="numper1" placeholder="الرقم الأول">
+        <input type="number" id="numper2" placeholder="الرقم الثاني">
+        
+        <div class="buttons">
+            <button onclick="calculate('+')">➕</button>
+            <button onclick="calculate('-')">➖</button>
+            <button onclick="calculate('*')">✖️</button>
+            <button onclick="calculate('/')">➗</button>
+        </div>
+        
+        <div id="result">النتيجة: ...</div>
+        
+        <div class="actions">
+            <button class="clear" onclick="clearAll()">🗑️ مسح</button>
+            <button class="download" onclick="downloadApp()">⬇️ تحميل التطبيق</button>
+        </div>
+    </div>
 
     <script>
-        function calculate(operation){
-          let num1 = document.getElementById("numper1");
-          let num2 = document.getElementById("numper2");
-          
-           let n1 = Number(num1.value);
-           let n2 = Number(num2.value);
-
-           if(num1.value === "" || num2.value === ""){
-            document.getElementById("result").innerText = "اكتب الرقم الاول عشان نقدر نحسب";
-            return;
-           }
-        
-
-        let result;
-        if(operation === "+"){
-            result = n1 + n2;
-        }else if(operation === "-"){
-            result = n1 - n2;
-        } else if(operation === "*"){
-            result = n1 * n2;
-        }
-        else if(operation === "/"){
-            if(n2 === 0){
-                document.getElementById("result").innerText = "مفيش قسمة على الصفر";
+        function calculate(operation) {
+            let num1 = document.getElementById("numper1");
+            let num2 = document.getElementById("numper2");
+            
+            let n1 = Number(num1.value);
+            let n2 = Number(num2.value);
+            
+            if (num1.value === "" || num2.value === "") {
+                document.getElementById("result").innerText = "اكتب رقمين الأول";
                 return;
             }
-           result = n1 / n2;
+            
+            let result;
+            let symbol;
+            
+            if (operation === "+") {
+                result = n1 + n2;
+                symbol = "+";
+            } else if (operation === "-") {
+                result = n1 - n2;
+                symbol = "-";
+            } else if (operation === "*") {
+                result = n1 * n2;
+                symbol = "×";
+            } else if (operation === "/") {
+                if (n2 === 0) {
+                    document.getElementById("result").innerText = "مفيش قسمة على الصفر";
+                    return;
+                }
+                result = n1 / n2;
+                symbol = "÷";
+            }
+            
+            document.getElementById("result").innerText = "النتيجة: " + result;
         }
-    
-     document.getElementById("result").innerText = "النتيجة : " + result; 
-    }
-    
+
+        function clearAll() {
+            document.getElementById("numper1").value = "";
+            document.getElementById("numper2").value = "";
+            document.getElementById("result").innerText = "النتيجة: ...";
+        }
+
+        function downloadApp() {
+            let appCode = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+            
+            let blob = new Blob([appCode], { type: "text/html;charset=utf-8" });
+            
+            let url = URL.createObjectURL(blob);
+            
+            let a = document.createElement("a");
+            a.href = url;
+            a.download = "calculator-app.html";
+            
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
     </script>
 </body>
 </html>
