@@ -2,21 +2,22 @@
 <html dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0f0c29">
-    
-    <!-- 🔥 PWA Meta Tags -->
+
+    <!-- PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="آلة حاسبة">
-    
-    <!-- 🔥 Manifest as Data URI -->
-    <link rel="manifest" href='data:application/manifest+json,{"name":"آلة حاسبة","short_name":"حاسبة","start_url":".","display":"standalone","background_color":"#0f0c29","theme_color":"#0f0c29","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Crect width=%22512%22 height=%22512%22 fill=%22%230f0c29%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%22300%22 text-anchor=%22middle%22 dy=%22.35em%22%3E🔢%3C/text%3E%3C/svg%3E","sizes":"512x512","type":"image/svg+xml"}]}'>
-    
-    <!-- 🔥 Favicon -->
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E🔢%3C/text%3E%3C/svg%3E">
-    
+
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+
     <title>آلة حاسبة</title>
     <style>
         * {
@@ -24,6 +25,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
         body {
             background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
@@ -32,6 +34,7 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            user-select: none;
         }
         .container {
             background: #1e1e2e;
@@ -80,15 +83,19 @@
             border-radius: 8px;
             color: white;
             background: #667eea;
-            transition: 0.3s;
+            transition: 0.2s;
+            min-width: 60px;
         }
         button:hover {
             background: #5568d3;
             transform: translateY(-2px);
         }
+        button:active {
+            transform: translateY(0);
+        }
         button.clear { background: #e17055; }
         button.clear:hover { background: #d63031; }
-        button.install { background: #00b894; }
+        button.install { background: #00b894; display: none; }
         button.install:hover { background: #00a381; }
         #result {
             margin: 15px 0;
@@ -98,30 +105,16 @@
             padding: 15px;
             background: #2d2d44;
             border-radius: 8px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .actions {
             display: flex;
             gap: 8px;
             justify-content: center;
             margin-top: 15px;
-        }
-        .instructions {
-            margin-top: 20px;
-            padding: 15px;
-            background: #2d2d44;
-            border-radius: 8px;
-            color: #a5b4fc;
-            font-size: 13px;
-            text-align: right;
-            line-height: 1.8;
-        }
-        .instructions h3 {
-            color: #00b894;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-        #installBtn {
-            display: none;
         }
     </style>
 </head>
@@ -130,101 +123,67 @@
         <h2>🔢 آلة حاسبة</h2>
         <input type="number" id="numper1" placeholder="الرقم الأول">
         <input type="number" id="numper2" placeholder="الرقم الثاني">
-        
+
         <div class="buttons">
             <button onclick="calculate('+')">➕</button>
             <button onclick="calculate('-')">➖</button>
             <button onclick="calculate('*')">✖️</button>
             <button onclick="calculate('/')">➗</button>
         </div>
-        
+
         <div id="result">النتيجة: ...</div>
-        
+
         <div class="actions">
             <button class="clear" onclick="clearAll()">🗑️ مسح</button>
             <button class="install" id="installBtn" onclick="installApp()">📲 تثبيت التطبيق</button>
         </div>
-
-  
     </div>
 
     <script>
-        // متغير لتخزين حدث التثبيت
         let deferredPrompt;
 
-        // 🔥 الاستماع لحدث التثبيت
         window.addEventListener('beforeinstallprompt', (e) => {
-            // منع عرض الـ prompt تلقائياً
             e.preventDefault();
-            // تخزين الحدث
             deferredPrompt = e;
-            // إظهار زرار التثبيت
             document.getElementById('installBtn').style.display = 'inline-block';
         });
 
-        // 🔥 دالة تثبيت التطبيق
         function installApp() {
             if (deferredPrompt) {
-                // عرض الـ prompt
                 deferredPrompt.prompt();
-                // الانتظار لاستجابة المستخدم
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
                         alert('✅ تم تثبيت التطبيق! هتلاقيه في الشاشة الرئيسية');
-                    } else {
-                        alert('😒 تم رفض التثبيت');
                     }
                     deferredPrompt = null;
                 });
-            } else {
-                alert('استخدم زرار "إضافة للشاشة الرئيسية" من المتصفح');
             }
         }
 
-        // 🔥 تسجيل Service Worker للأوفلاين
+        // تسجيل Service Worker
         if ('serviceWorker' in navigator) {
-            // نقدر نعمله inline بـ Blob
-            const swCode = `
-                const CACHE_NAME = 'calculator-v1';
-                self.addEventListener('install', (e) => {
-                    self.skipWaiting();
-                });
-                self.addEventListener('activate', (e) => {
-                    e.waitUntil(self.clients.claim());
-                });
-                self.addEventListener('fetch', (e) => {
-                    e.respondWith(
-                        caches.match(e.request).then((response) => {
-                            return response || fetch(e.request);
-                        })
-                    );
-                });
-            `;
-            const blob = new Blob([swCode], { type: 'application/javascript' });
-            const swUrl = URL.createObjectURL(blob);
-            
-            navigator.serviceWorker.register(swUrl).then(() => {
-                console.log('✅ Service Worker مسجل');
-            }).catch((err) => {
-                console.log('❌ Service Worker مش شغال:', err);
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(() => console.log('✅ Service Worker مسجل'))
+                    .catch((err) => console.log('❌ خطأ:', err));
             });
         }
 
         function calculate(operation) {
             let num1 = document.getElementById("numper1");
             let num2 = document.getElementById("numper2");
-            
+
             let n1 = Number(num1.value);
             let n2 = Number(num2.value);
-            
+
             if (num1.value === "" || num2.value === "") {
                 document.getElementById("result").innerText = "اكتب رقمين الأول";
                 return;
             }
-            
+
             let result;
             let symbol;
-            
+
             if (operation === "+") {
                 result = n1 + n2;
                 symbol = "+";
@@ -242,7 +201,7 @@
                 result = n1 / n2;
                 symbol = "÷";
             }
-            
+
             document.getElementById("result").innerText = "النتيجة: " + result;
         }
 
@@ -254,3 +213,4 @@
     </script>
 </body>
 </html>
+
