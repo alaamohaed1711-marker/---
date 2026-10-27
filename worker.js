@@ -1,4 +1,3 @@
-// Service Worker - آلة حاسبة PWA
 const CACHE_NAME = 'calculator-pwa-v1';
 const FILES_TO_CACHE = [
     './',
@@ -7,20 +6,18 @@ const FILES_TO_CACHE = [
     './icon.svg'
 ];
 
-// تثبيت Service Worker وتخزين الملفات
 self.addEventListener('install', (event) => {
     console.log('✅ Service Worker: جاري التثبيت');
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
-                console.log('✅ Service Worker: تم تخزين الملفات');
+                console.log('✅ Service Worker: جاري تخزين الملفات');
                 return cache.addAll(FILES_TO_CACHE);
             })
             .then(() => self.skipWaiting())
     );
 });
 
-// تفعيل Service Worker وحذف الكاش القديم
 self.addEventListener('activate', (event) => {
     console.log('✅ Service Worker: جاري التفعيل');
     event.waitUntil(
@@ -28,7 +25,6 @@ self.addEventListener('activate', (event) => {
             return Promise.all(
                 cacheNames.map((cacheName) => {
                     if (cacheName !== CACHE_NAME) {
-                        console.log('🗑️ Service Worker: حذف كاش قديم', cacheName);
                         return caches.delete(cacheName);
                     }
                 })
@@ -37,23 +33,20 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// جلب الملفات (من الكاش أو من الشبكة)
 self.addEventListener('fetch', (event) => {
+    if (event.request.method !== 'GET') return;
+    
     event.respondWith(
         caches.match(event.request)
             .then((response) => {
-                // لو الملف موجود في الكاش، رجعه
                 if (response) {
                     return response;
                 }
-                // غير كده، جيبه من الشبكة
                 return fetch(event.request)
                     .then((response) => {
-                        // لو مش response صالح، رجعه زي ما هو
                         if (!response || response.status !== 200 || response.type !== 'basic') {
                             return response;
                         }
-                        // خزّن نسخة في الكاش
                         const responseToCache = response.clone();
                         caches.open(CACHE_NAME)
                             .then((cache) => {
@@ -62,11 +55,10 @@ self.addEventListener('fetch', (event) => {
                         return response;
                     })
                     .catch(() => {
-                        // لو النت فاصل، رجع صفحة أوفلاين
-                        return caches.match('./index.html');
+                        if (event.request.mode === 'navigate') {
+                            return caches.match('./index.html');
+                        }
                     });
             })
-    );
-});
     );
 });
